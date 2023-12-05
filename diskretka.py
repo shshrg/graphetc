@@ -31,3 +31,18 @@ def read_graph(file, Dict=False, Oriented=True):
                         points.add(x[0])
                 res[y] = points
         return res
+
+def hamilton(graph):
+    pass
+
+def eiler(graph):
+    pass
+
+def double(graph):
+    pass
+
+def isomorph(graph1, graph2):
+    pass
+
+def color(graph):
+    pass
