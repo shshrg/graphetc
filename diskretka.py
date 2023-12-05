@@ -1,6 +1,7 @@
 '''Комп'ютерний проєкт'''
 
 # якщо треба словник та Dict=True, якщо неорієнтований граф то Oriented=False
+# якщо граф орієнтований, то у списку будуть тапли, якщо ні то множини
 def read_graph(file, Dict=False, Oriented=True):
     '''
     Reads a csv and returns a graph in the form of a list or dictionary.
@@ -13,11 +14,8 @@ def read_graph(file, Dict=False, Oriented=True):
     if not Dict:
         list_graph = [(lines[0][i], lines[1][i]) for i in range(len(lines[0]))]
         if not Oriented:
-            for x in list_graph:
-                for y in list_graph:
-                    if y == (x[1],x[0]) and x[0] != x[1]:
-                        list_graph.pop(list_graph.index(y))
-                        continue
+            for i,x in enumerate(list_graph):
+                list_graph[i] = set(x)
         return list_graph
     else:
         if Oriented:
