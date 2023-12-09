@@ -57,17 +57,18 @@ def graph_coloring(graph):
     >>> graph_coloring({'A': ['B', 'C', 'D', 'E'], 'B': ['A', 'C', 'D', 'E'], 'C': ['A', 'B', 'D', 'E'], 'D': ['A', 'B', 'C', 'E'], 'E': ['A', 'B', 'C', 'D']})
     'Неможливо зафарбувати'
     """
-    def color(lst):
-        colors = set(lst)
-        color_lst = ['Red', "Green", "Blue"]
-        for i in range(3):
-            if color_lst[i] not in colors:
+    def color(lst): # функція для визначення кольору
+        colors = set(lst) # всі кольори, які вже використані
+        color_lst = ['Red', "Green", "Blue"] # можливі кольори
+        for i in range(3): # перевіряємо, якого кольору немає в сусідів
+            if color_lst[i] not in colors: # якщо такого кольору немає, то повертаємо його
                 return color_lst[i]
         return None
-    color_dict = dict()
-    for node in graph:
+    color_dict = dict() # словник, де ключ - вершина, а значення - колір
+    for node in graph: # проходимо по всіх вершинах
         visited_color = [color_dict[elem] for elem in graph[node] if elem in color_dict]
-        color_dict[node] = color(visited_color)
-        if color_dict[node] is None:
+# перевіряємо, які кольори вже використані
+        color_dict[node] = color(visited_color) # зафарбовуємо вершину
+        if color_dict[node] is None: # якщо не вдалося зафарбувати, то повертаємо None
             return "Неможливо зафарбувати"
     return color_dict
