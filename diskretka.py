@@ -44,5 +44,31 @@ def double(graph):
 def isomorph(graph1, graph2):
     pass
 
-def color(graph):
-    pass
+def graph_coloring(graph):
+    """Розфарбовування графа жадібним алгоритмом
+    >>> graph_coloring({'A': ['B', 'C'], 'B': ['A', 'C'], 'C': ['B', 'A']})
+    {'A': 'Red', 'B': 'Green', 'C': 'Blue'}
+    >>> graph_coloring({'A': ['B', 'C', 'D'], 'B': ['A', 'C'], 'C': ['A', 'B', 'D'], 'D': ['A', 'C']})
+    {'A': 'Red', 'B': 'Green', 'C': 'Blue', 'D': 'Green'}
+    >>> graph_coloring({'A': ['B', 'C'], 'B': ['A', 'C'], 'C': ['A', 'B'], 'D': ['B', 'E'], 'E': ['D']})
+    {'A': 'Red', 'B': 'Green', 'C': 'Blue', 'D': 'Red', 'E': 'Green'}
+    >>> graph_coloring({'A': ['B', 'C', 'D'], 'B': ['A', 'C', 'D'], 'C': ['A', 'B', 'D'], 'D': ['A', 'B', 'C']})
+    'Неможливо зафарбувати'
+    >>> graph_coloring({'A': ['B', 'C', 'D', 'E'], 'B': ['A', 'C', 'D', 'E'], 'C': ['A', 'B', 'D', 'E'], 'D': ['A', 'B', 'C', 'E'], 'E': ['A', 'B', 'C', 'D']})
+    'Неможливо зафарбувати'
+    """
+    def color(lst): # функція для визначення кольору
+        colors = set(lst) # всі кольори, які вже використані
+        color_lst = ['Red', "Green", "Blue"] # можливі кольори
+        for i in range(3): # перевіряємо, якого кольору немає в сусідів
+            if color_lst[i] not in colors: # якщо такого кольору немає, то повертаємо його
+                return color_lst[i]
+        return None
+    color_dict = dict() # словник, де ключ - вершина, а значення - колір
+    for node in graph: # проходимо по всіх вершинах
+        visited_color = [color_dict[elem] for elem in graph[node] if elem in color_dict]
+# перевіряємо, які кольори вже використані
+        color_dict[node] = color(visited_color) # зафарбовуємо вершину
+        if color_dict[node] is None: # якщо не вдалося зафарбувати, то повертаємо None
+            return "Неможливо зафарбувати"
+    return color_dict
