@@ -1,7 +1,5 @@
 '''Комп'ютерний проєкт'''
 
-# якщо треба словник та Dict=True, якщо неорієнтований граф то Oriented=False
-# якщо граф орієнтований, то у списку будуть тапли, якщо ні то множини
 def read_graph(file):
     '''
     Reads a csv and returns a graph in the form of a list or dictionary.
