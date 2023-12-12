@@ -29,7 +29,26 @@ def double(graph):
     pass
 
 def isomorph(graph1, graph2):
-    pass
+    if len(graph1.keys()) != len(graph2.keys()):
+        print('Given graphs have different number of vertexes')
+        return False
+    # print(len(graph1.keys()), len(graph2.keys()))
+
+    set_1 = set()
+    for key, values in graph1.items():
+        for value in values:
+            if (value, key) not in set_1:
+                set_1.add((key, value))
+
+    set_2 = set()
+    for key, values in graph2.items():
+        for value in values:
+            if (value, key) not in set_2:
+                set_2.add((key, value))
+
+    if len(set_1) != len(set_2):
+        print('Given graphs have different amount of edges')
+        return False
 
 def graph_coloring(graph):
     """Розфарбовування графа жадібним алгоритмом
