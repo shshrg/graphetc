@@ -16,7 +16,7 @@ def read_graph(file):
         for y in list_graph:
             if y[0] == x:
                 l.append(y[1])
-        res[x] = l
+        res[x] = sorted(l)
     return res
 
 def hamilton(graph):
