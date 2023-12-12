@@ -9,15 +9,13 @@ def read_graph(file):
         for i,l in enumerate(lines):
             lines[i] = [int(i) for i in l.rstrip().split(',')]
     list_graph = [(lines[0][i], lines[1][i]) for i in range(len(lines[0]))]
-    all_points = set([x[0] for x in list_graph]+[y[1] for y in list_graph])
+    all_points = set([x[0] for x in list_graph])
     res = {}
     for x in all_points:
         l = []
         for y in list_graph:
             if y[0] == x:
                 l.append(y[1])
-            elif y[1] == x:
-                l.append(y[0])
         res[x] = l
     return res
 
