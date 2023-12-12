@@ -67,6 +67,34 @@ def isomorph(graph1, graph2):
         if dct_2[key] != value:
             return False
 
+    dct_1 = {}
+    for key, values in graph1.items():
+        res_lst = []
+        for value in values:
+            res_lst.append(len(graph1[value]))
+        tup = tuple(sorted(res_lst))
+        if (len(values), tup) not in dct_1:
+            dct_1[len(values), tup] = 1
+        else:
+            dct_1[len(values), tup] += 1
+
+    dct_2 = {}
+    for key, values in graph2.items():
+        res_lst = []
+        for value in values:
+            res_lst.append(len(graph2[value]))
+        tup = tuple(sorted(res_lst))
+        if (len(values), tup) not in dct_2:
+            dct_2[len(values), tup] = 1
+        else:
+            dct_2[len(values), tup] += 1
+
+    for key,values in dct_1:
+        if key not in dct_1:
+            return False
+        if dct_2[key] != values:
+            return False
+
 def graph_coloring(graph):
     """Розфарбовування графа жадібним алгоритмом
     >>> graph_coloring({'A': ['B', 'C'], 'B': ['A', 'C'], 'C': ['B', 'A']})
