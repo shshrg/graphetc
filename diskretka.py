@@ -29,11 +29,15 @@ def double(graph):
     pass
 
 def isomorph(graph1, graph2):
+    '''
+    This function checks if given pair of graphs is isomorphic
+    '''
+    # Checks graphs by amount of vertexes
     if len(graph1.keys()) != len(graph2.keys()):
         print('Given graphs have different number of vertexes')
         return False
-    # print(len(graph1.keys()), len(graph2.keys()))
 
+    # Checks graphs by amount of edges
     lst_1 = []
     for key, values in graph1.items():
         lst_1.extend(values)
@@ -46,6 +50,7 @@ def isomorph(graph1, graph2):
         print('Given graphs have different amount of edges')
         return False
 
+    # Checks graphs by degree of vertexes
     dct_1 = {}
     for key, values in graph1.items():
         if len(values) in dct_1:
@@ -59,7 +64,6 @@ def isomorph(graph1, graph2):
             dct_2[len(values)] += 1
         else:
             dct_2[len(values)] = 1
-    print(f'dct_1: {dct_1}, dct_2: {dct_2}')
 
     for key, value in dct_1.items():
         if key not in dct_2:
@@ -67,6 +71,7 @@ def isomorph(graph1, graph2):
         if dct_2[key] != value:
             return False
 
+    # Checks graphs by degree of the vertex and degree of its neighbours
     dct_1 = {}
     for key, values in graph1.items():
         res_lst = []
