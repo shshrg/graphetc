@@ -50,6 +50,27 @@ def isomorph(graph1, graph2):
         print('Given graphs have different amount of edges')
         return False
 
+    dct_1 = {}
+    for key, values in graph1.items():
+        if len(values) in dct_1:
+            dct_1[len(values)] += 1
+        else:
+            dct_1[len(values)] = 1
+
+    dct_2 = {}
+    for key, values in graph2.items():
+        if len(values) in dct_2:
+            dct_2[len(values)] += 1
+        else:
+            dct_2[len(values)] = 1
+    print(f'dct_1: {dct_1}, dct_2: {dct_2}')
+
+    for key, value in dct_1.items():
+        if key not in dct_2:
+            return False
+        if dct_2[key] != value:
+            return False
+
 def graph_coloring(graph):
     """Розфарбовування графа жадібним алгоритмом
     >>> graph_coloring({'A': ['B', 'C'], 'B': ['A', 'C'], 'C': ['B', 'A']})
