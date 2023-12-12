@@ -34,19 +34,15 @@ def isomorph(graph1, graph2):
         return False
     # print(len(graph1.keys()), len(graph2.keys()))
 
-    set_1 = set()
+    lst_1 = []
     for key, values in graph1.items():
-        for value in values:
-            if (value, key) not in set_1:
-                set_1.add((key, value))
+        lst_1.extend(values)
 
-    set_2 = set()
+    lst_2 = []
     for key, values in graph2.items():
-        for value in values:
-            if (value, key) not in set_2:
-                set_2.add((key, value))
+        lst_2.extend(values)
 
-    if len(set_1) != len(set_2):
+    if len(lst_1) != len(lst_2):
         print('Given graphs have different amount of edges')
         return False
 
