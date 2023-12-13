@@ -100,6 +100,43 @@ def isomorph(graph1, graph2):
         if dct_2[key] != values:
             return False
 
+    # Checks graphs by lengths of their simple cycles
+    def recursive_find_cycle(graph, key, lst_of_keys = None, res = None, deep = 0):
+        if lst_of_keys is None:
+            lst_of_keys = [key]
+        if res is None:
+            res = []
+        for i in graph[key]:
+            if i not in lst_of_keys:
+                lst_of_keys.append(i)
+                recursive_find_cycle(graph,i,lst_of_keys,res,deep+1)
+                if lst_of_keys[0] in graph[lst_of_keys[-1]] and deep != 0:
+                    res.append(lst_of_keys.copy())
+                lst_of_keys.remove(i)
+        return res
+
+    dct_1 = {}
+    for key in graph1.keys():
+        for i in recursive_find_cycle(graph1, key):
+            if len(i) not in dct_1:
+                dct_1[len(i)] = 1
+            else:
+                dct_1[len(i)] += 1
+
+    dct_2 = {}
+    for key in graph2.keys():
+        for i in recursive_find_cycle(graph2, key):
+            if len(i) not in dct_2:
+                dct_2[len(i)] = 1
+            else:
+                dct_2[len(i)] += 1
+
+    for key, value in dct_1:
+        if key not in dct_2:
+            return False
+        if dct_2[key] != value:
+            return False
+
 def graph_coloring(graph):
     """Розфарбовування графа жадібним алгоритмом
     >>> graph_coloring({'A': ['B', 'C'], 'B': ['A', 'C'], 'C': ['B', 'A']})
