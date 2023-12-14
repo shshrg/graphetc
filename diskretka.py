@@ -1,4 +1,5 @@
 '''Комп'ютерний проєкт'''
+from itertools import permutations
 
 def read_graph(file):
     '''
@@ -27,6 +28,35 @@ def eiler(graph):
 
 def double(graph):
     pass
+
+def find_cycle_(graph):
+    '''
+    Function, which returns all the cycles from given graph
+    '''
+    def recur_find_cycle(graph, key, lst_of_keys = None, res = None, deep = 0):
+        if lst_of_keys is None:
+            lst_of_keys = [key]
+        if res is None:
+            res = []
+        if key in graph:
+            for i in graph[key]:
+                if i not in lst_of_keys:
+                    lst_of_keys.append(i)
+                    recur_find_cycle(graph,i,lst_of_keys,res,deep+1)
+                    if lst_of_keys[-1] in graph and lst_of_keys[0] in graph[lst_of_keys[-1]] and \
+deep != 0 and sorted(lst_of_keys) not in [sorted(i) for i in res]:
+                        res.append(lst_of_keys.copy())
+                    lst_of_keys.remove(i)
+        return res
+
+    res_ = []
+    for key in graph.keys():
+        output = recur_find_cycle(graph, key)
+        srt_res = [sorted(i) for i in res_]
+        for i in output:
+            if sorted(i) not in srt_res:
+                res_.append(i)
+    return res_
 
 def isomorph(graph1, graph2):
     '''
@@ -94,8 +124,8 @@ def isomorph(graph1, graph2):
         else:
             dct_2[len(values), tup] += 1
 
-    for key,values in dct_1:
-        if key not in dct_1:
+    for key,values in dct_1.items():
+        if key not in dct_2:
             return False
         if dct_2[key] != values:
             return False
@@ -116,26 +146,62 @@ def isomorph(graph1, graph2):
         return res
 
     dct_1 = {}
-    for key in graph1.keys():
-        for i in recursive_find_cycle(graph1, key):
-            if len(i) not in dct_1:
-                dct_1[len(i)] = 1
-            else:
-                dct_1[len(i)] += 1
+    for i in find_cycle_(graph1):
+        if len(i) not in dct_1:
+            dct_1[len(i)] = 1
+        else:
+            dct_1[len(i)] += 1
 
     dct_2 = {}
-    for key in graph2.keys():
-        for i in recursive_find_cycle(graph2, key):
-            if len(i) not in dct_2:
-                dct_2[len(i)] = 1
-            else:
-                dct_2[len(i)] += 1
+    for i in find_cycle_(graph2):
+        if len(i) not in dct_2:
+            dct_2[len(i)] = 1
+        else:
+            dct_2[len(i)] += 1
 
-    for key, value in dct_1:
+    for key, value in dct_1.items():
         if key not in dct_2:
             return False
         if dct_2[key] != value:
             return False
+
+
+    graph1_ = []
+    for key,values in graph1.items():
+        graph1_.append((key, sorted(values)))
+    graph1_ = dict(graph1_)
+
+    graph2_ = []
+    for key,values in graph2.items():
+        graph2_.append((key, sorted(values)))
+    graph2_ = dict(graph2_)
+
+    mat_1 = []
+    for val in graph1_.values():
+        lst_app = []
+        for ind_x in graph1_:
+            if ind_x not in val:
+                lst_app.append(0)
+            else:
+                lst_app.append(1)
+        mat_1.append(lst_app)
+
+    mat_2 = []
+    for val in graph1_.values():
+        lst_app = []
+        for ind_x in graph1_:
+            if ind_x not in val:
+                lst_app.append(0)
+            else:
+                lst_app.append(1)
+        mat_2.append(lst_app)
+
+    if mat_1 == mat_2:
+        return True
+
+    for i in list(permutations(mat_1, len(graph1_.keys()))):
+        if i == mat_2:
+            return True
 
 def graph_coloring(graph):
     """Розфарбовування графа жадібним алгоритмом
