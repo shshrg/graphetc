@@ -24,6 +24,7 @@ def hamilton(graph):
 
 def eiler(graph):
     pass
+
 def find_cycle_(graph):
     '''
     Function, which returns all the cycles from given graph
