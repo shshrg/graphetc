@@ -41,7 +41,6 @@ def find_cycle_(graph):
                     recur_find_cycle(graph,i,lst_of_keys,res,deep+1)
                     if lst_of_keys[-1] in graph and lst_of_keys[0] in graph[lst_of_keys[-1]] and \
 deep != 0 and sorted(lst_of_keys) not in [sorted(i) for i in res]:
-                        print(lst_of_keys.copy())
                         res.append(lst_of_keys.copy())
                     lst_of_keys.remove(i)
         return res
@@ -49,7 +48,6 @@ deep != 0 and sorted(lst_of_keys) not in [sorted(i) for i in res]:
     res_ = []
     for key in graph.keys():
         output = recur_find_cycle(graph, key)
-        print(f'output: {output}')
         srt_res = [sorted(i) for i in res_]
         for i in output:
             if sorted(i) not in srt_res:
@@ -65,6 +63,8 @@ def double(graph: dict) -> bool:
     True
     >>> double({0: [2, 3, 4], 1: [2, 3, 4], 2: [0, 1], 3: [0, 1], 4: [0, 1, 2]})
     False
+    >>> double({1: [7], 2: [4], 3: [2], 4: [1], 5: [5], 6: [5]})
+    True
     '''
     empty_nodes = []
     for start in graph:
@@ -98,12 +98,14 @@ def double(graph: dict) -> bool:
 def double2(graph: dict) -> bool:
     '''
     Checks whether graph is bipartite. Second implementation using simple cycles.
-    >>> double({0: [2, 3, 4], 1: [2, 3, 4], 2: [0, 1], 3: [0, 1], 4: [0, 1]})
+    >>> double2({0: [2, 3, 4], 1: [2, 3, 4], 2: [0, 1], 3: [0, 1], 4: [0, 1]})
     True
-    >>> double({0: [2, 3, 4], 1: [2, 3, 4]})
+    >>> double2({0: [2, 3, 4], 1: [2, 3, 4]})
     True
-    >>> double({0: [2, 3, 4], 1: [2, 3, 4], 2: [0, 1], 3: [0, 1], 4: [0, 1, 2]})
+    >>> double2({0: [2, 3, 4], 1: [2, 3, 4], 2: [0, 1], 3: [0, 1], 4: [0, 1, 2]})
     False
+    >>> double2({1: [7], 2: [4], 3: [2], 4: [1], 5: [5], 6: [5]})
+    True
     '''
     all_simple_cycles = find_cycle_(graph)
     cycles_len_is_even = all(not len(cycle)&1 for cycle in all_simple_cycles)
