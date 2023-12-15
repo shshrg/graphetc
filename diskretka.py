@@ -281,16 +281,6 @@ def find_independent_nodes(graph: dict, stop: int) -> list[list]:
     return independent_array
 
 def graph_coloring(graph):
-    colors = ['Red', 'Green', 'Blue']
-    independent_array = find_independent_nodes(graph, 4)
-    if len(independent_array) > 3:
-        return 'Неможливо зафарбувати'
-    colored_graph = {}
-    for i, nodes in enumerate(independent_array):
-        for node in nodes:
-            colored_graph[node] = colors[i]
-    visualise(graph, colored_graph)
-    return colored_graph
 
 
 ####### HELPING FUNCTIONS
