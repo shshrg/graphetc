@@ -93,7 +93,7 @@ def double(graph: dict) -> bool:
                         break
                 else:
                     break
-    return len(independent_array) == 2
+    return True
 
 def double2(graph: dict) -> bool:
     '''
