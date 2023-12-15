@@ -289,7 +289,8 @@ def graph_coloring(graph, vis = False):
     for i, nodes in enumerate(independent_array):
         for node in nodes:
             colored_graph[node] = colors[i]
-    visualise(graph, colored_graph)
+    if vis:
+        visualise(graph, colored_graph)
     return colored_graph
 
 ####### HELPING FUNCTIONS
