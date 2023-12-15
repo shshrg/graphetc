@@ -92,7 +92,7 @@ def find_path(graph:dict, src, dst, res:list):
                 if find_path(graph, apex, dst, res):
                     return True
     return False
-    
+
 def strong_c(graph:dict):
     for apex_src in graph.keys():
         for apex_dst in graph.keys():
@@ -160,7 +160,7 @@ def eiler(graph:dict) -> list[int]:
                         if neigh in graph.keys() and apex in graph[neigh]:
                             if not orientation:
                                 graph[neigh].remove(apex)
-            
+
                         empty = ''
                         for vertex in graph.keys():
                             if not graph[vertex]:
@@ -177,7 +177,7 @@ def eiler(graph:dict) -> list[int]:
                 return result
             return find_cycle(graph, start, [])
         return 'No Euler cycle'
-    
+
     vertex_list = []
     edges = euler_edges(graph)
     if edges != 'No Euler cycle':
@@ -186,7 +186,7 @@ def eiler(graph:dict) -> list[int]:
         return vertex_list
     return 'No Euler cycle'
 
-def find_cycle_(graph, degree = False):
+def find_cycle_(graph, degree_ = False):
     '''
     Function, which returns all the cycles from given graph
     '''
@@ -209,13 +209,13 @@ deep != 0 and sorted(lst_of_keys) not in [sorted(i) for i in res]:
     res_ = []
     for key in graph.keys():
         output = recur_find_cycle(graph, key)
-        if degree:
+        if degree_:
             srt_res = [sorted(i[0]) for i in res_]
         else:
             srt_res = [sorted(i) for i in res_]
         for i in output:
             if sorted(i) not in srt_res:
-                if degree:
+                if degree_:
                     dct_ = {}
                     for j in sorted(i):
                         if len(graph[j]) not in dct_:
