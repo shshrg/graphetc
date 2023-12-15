@@ -1,4 +1,29 @@
 '''Комп'ютерний проєкт'''
+import matplotlib.pyplot as plt
+import networkx as nx
+
+def visualise(graph, colors=False):
+    '''Funtion to visualise graphs. If colors is True return graph coloring'''
+    for start in list(graph):
+        for end in graph[start]:
+            if end not in graph:
+                graph[end] = []
+    print(f'graph: {graph}')
+    print(graph_coloring(graph))
+    G = nx.DiGraph()
+    for key, value in graph_coloring(graph).items():
+        if colors:
+            G.add_node(key, color=value)
+        else:
+            G.add_node(key)
+    G.add_edges_from([(key, value) for key, values in graph.items() for value in values])
+    if colors:
+        colors = [node[1]['color'] for node in G.nodes(data=True)]
+        nx.draw(G, node_color=colors, with_labels=True, font_color='white')
+    else:
+        nx.draw(G, with_labels=True, font_color='white')
+
+    plt.show()
 
 def read_graph(file):
     '''
