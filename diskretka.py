@@ -66,13 +66,10 @@ def double(graph: dict) -> bool:
     >>> double({1: [7], 2: [4], 3: [2], 4: [1], 5: [5], 6: [5]})
     True
     '''
-    empty_nodes = []
-    for start in graph:
+    for start in list(graph):
         for end in graph[start]:
             if end not in graph:
-                empty_nodes += [end]
-    for empty_node in empty_nodes:
-        graph[empty_node] = []
+                graph[end] = []
     graph_keys = list(graph)
     independent_array = [[graph_keys[0]]]
     for start in graph_keys[1:]:
