@@ -176,15 +176,15 @@ def eiler(graph:dict) -> list[int]:
                         return find_cycle(graph, neigh, result)
                 return result
             return find_cycle(graph, start, [])
-        return 'No Euler cycle'
+        return False
 
     vertex_list = []
     edges = euler_edges(graph)
-    if edges != 'No Euler cycle':
+    if edges != False:
         for pair in edges:
             vertex_list.append(pair[0])
         return vertex_list
-    return 'No Euler cycle'
+    return False
 
 def find_cycle_(graph, degree_ = False):
     '''
