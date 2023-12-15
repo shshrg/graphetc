@@ -44,11 +44,151 @@ def read_graph(file):
         res[x] = sorted(l)
     return res
 
-def hamilton(graph):
-    pass
+####### HELPING FUNCTIONS
+def loop_search(graph:dict):
+        for src, dst in graph.items():
+            loop = 0
+            for item in dst:
+                if src == item:
+                    loop = item
+            if loop:
+                dst = dst.remove(loop)
+        return graph
 
-def eiler(graph):
-    pass
+def isorient(graph:dict):
+    for apex, neighs in graph.items():
+        for point in neighs:
+            if point in graph.keys():
+                if apex not in graph[point]:
+                    return True
+    return False
+
+def connected(graph:dict):
+    for apex_src in graph.keys():
+        for apex_dst in graph.keys():
+            if apex_src != apex_dst:
+                n = find_path(graph, apex_src, apex_dst, [])
+                m = find_path(graph, apex_dst, apex_src, [])
+                if not n and not m:
+                    return False
+    return True
+
+def degree(graph:dict, apex):
+    if isorient(graph):
+        degree_out = len(graph[apex])
+        degree_in = 0
+        for point in graph.keys():
+            if apex in graph[point]:
+                degree_in +=1
+        return (degree_in, degree_out)
+    return len(graph[apex])
+
+def find_path(graph:dict, src, dst, res:list):
+    res.append(src)
+    if src in graph.keys():
+        if dst in graph[src]:
+            return True
+        for apex in graph[src]:
+            if apex not in res:
+                if find_path(graph, apex, dst, res):
+                    return True
+    return False
+    
+def strong_c(graph:dict):
+    for apex_src in graph.keys():
+        for apex_dst in graph.keys():
+            n = find_path(graph, apex_src, apex_dst, [])
+            if not n:
+                return n
+    return True
+########
+
+def hamilton(graph:dict):
+    path = []
+    start = list(graph.keys())[0]
+    size = len(list(graph.keys()))
+    path.append(start)
+
+    def ishamilton(graph, apex, path:list):
+        if len(path) == size and start in graph[apex]:
+            return (True, path)
+        for neigh in graph[apex]:
+            if neigh not in path:
+                path.append(neigh)
+                if ishamilton(graph, neigh, path)[0]:
+                    return (True, path)
+                path.remove(neigh)
+        return (False, path)
+    path = ishamilton(graph, start, path)[1]
+    if len(path) == 1:
+        return False
+    return path
+
+def eiler(graph:dict) -> list[int]:
+    
+
+    
+    def iseuler(graph:dict):
+        if connected(graph):
+            if isorient(graph):
+                for apex in graph.keys():
+                    if not degree(graph, apex)[0] == degree(graph, apex)[1]:
+                        return False
+                return strong_c(graph)
+            for apex in graph.keys():
+                if not degree(graph, apex) % 2 == 0:
+                    return False
+            return True
+        return False
+
+    def valid(graph:dict, edge_start, edge_fin, orientation):
+        if len(graph[edge_start]) == 1:
+            return True
+        new_g = copy.deepcopy(graph)
+        new_g[edge_start].remove(edge_fin)
+        if not orientation:
+            if edge_fin in new_g.keys() and edge_start in new_g[edge_fin]:
+                    new_g[edge_fin].remove(edge_start)
+        return connected(new_g)
+
+    def euler_edges(graph):
+        orientation = isorient(graph)
+        graph = loop_search(graph)
+        if iseuler(graph):
+            start =list(graph.keys())[0]
+            def find_cycle(graph:dict, apex, result:list):
+                for neigh in graph[apex]:
+                    if valid(graph, apex, neigh, orientation):
+                        result.append((apex, neigh))
+                        graph[apex].remove(neigh)
+                        if neigh in graph.keys() and apex in graph[neigh]:
+                            if not orientation:
+                                graph[neigh].remove(apex)
+            
+                        empty = ''
+                        for vertex in graph.keys():
+                            if not graph[vertex]:
+                                empty = vertex 
+                            if orientation:
+                                for vertex in graph.keys():
+                                    if empty in graph[vertex]:
+                                        empty = ''
+                                        break
+                        if empty != '':
+                            del graph[empty]
+
+                        return find_cycle(graph, neigh, result)
+                return result
+            return find_cycle(graph, start, [])
+        return 'No Euler cycle'
+    
+    vertex_list = []
+    edges = euler_edges(graph)
+    if edges != 'No Euler cycle':
+        for pair in edges:
+            vertex_list.append(pair[0])
+        return vertex_list
+    return 'No Euler cycle'
 
 def find_cycle_(graph, degree = False):
     '''
