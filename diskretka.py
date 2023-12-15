@@ -22,7 +22,7 @@ def read_graph(file, vis=False):
                 l.append(y[1])
         res[x] = sorted(l)
     if vis:
-        visualise(res)
+        visualise(res, False)
     return res
 
 def hamilton(graph:dict):
@@ -122,34 +122,7 @@ def double(graph: dict) -> bool:
     >>> double({1: [7], 2: [4], 3: [2], 4: [1], 5: [5], 6: [5]})
     True
     '''
-    empty_nodes = []
-    for start in graph:
-        for end in graph[start]:
-            if end not in graph:
-                empty_nodes += [end]
-    for empty_node in empty_nodes:
-        graph[empty_node] = []
-    independent_array = []
-    for start in graph:
-        if not independent_array:
-            independent_array += [[start]]
-        else:
-            for j, independent_nodes in enumerate(independent_array):
-                if start not in independent_nodes:
-                    for node in independent_nodes:
-                        if node in graph[start] or start in graph[node]:
-                            is_last_node = j == len(independent_array) - 1
-                            if is_last_node:
-                                independent_array += [[start]]
-                                if len(independent_array) > 2:
-                                    return False
-                            break
-                    else:
-                        independent_nodes += [start]
-                        break
-                else:
-                    break
-    return True
+    return len(find_independent_nodes(graph, 3)) == 2
 
 def double2(graph: dict) -> bool:
     '''
@@ -279,35 +252,45 @@ of vertexes in cycles')
 of vertexes in cycles')
             return False
 
+def find_independent_nodes(graph: dict, stop: int) -> list[list]:
+    graph_keys = list(graph)
+    all_nodes = list(graph)
+    for start in graph_keys:
+        all_nodes += graph[start]
+    for i in range(max(all_nodes)+1):
+        if i not in graph_keys:
+            graph[i] = []
+    graph_keys = list(sorted(graph))
+    independent_array = [[graph_keys[0]]]
+    for start in graph_keys[1:]:
+        for j, independent_nodes in enumerate(independent_array):
+            if start not in independent_nodes:
+                for node in independent_nodes:
+                    if node in graph[start] or start in graph[node]:
+                        is_last_node = j == len(independent_array) - 1
+                        if is_last_node:
+                            independent_array += [[start]]
+                            if len(independent_array) == stop:
+                                return independent_array
+                        break
+                else:
+                    independent_nodes += [start]
+                    break
+            else:
+                break
+    return independent_array
 
 def graph_coloring(graph):
-    """Розфарбовування графа жадібним алгоритмом
-    >>> graph_coloring({'A': ['B', 'C'], 'B': ['A', 'C'], 'C': ['B', 'A']})
-    {'A': 'Red', 'B': 'Green', 'C': 'Blue'}
-    >>> graph_coloring({'A': ['B', 'C', 'D'], 'B': ['A', 'C'], 'C': ['A', 'B', 'D'], 'D': ['A', 'C']})
-    {'A': 'Red', 'B': 'Green', 'C': 'Blue', 'D': 'Green'}
-    >>> graph_coloring({'A': ['B', 'C'], 'B': ['A', 'C'], 'C': ['A', 'B'], 'D': ['B', 'E'], 'E': ['D']})
-    {'A': 'Red', 'B': 'Green', 'C': 'Blue', 'D': 'Red', 'E': 'Green'}
-    >>> graph_coloring({'A': ['B', 'C', 'D'], 'B': ['A', 'C', 'D'], 'C': ['A', 'B', 'D'], 'D': ['A', 'B', 'C']})
-    'Неможливо зафарбувати'
-    >>> graph_coloring({'A': ['B', 'C', 'D', 'E'], 'B': ['A', 'C', 'D', 'E'], 'C': ['A', 'B', 'D', 'E'], 'D': ['A', 'B', 'C', 'E'], 'E': ['A', 'B', 'C', 'D']})
-    'Неможливо зафарбувати'
-    """
-    def color(lst): # функція для визначення кольору
-        colors = set(lst) # всі кольори, які вже використані
-        color_lst = ['Red', "Green", "Blue"] # можливі кольори
-        for i in range(3): # перевіряємо, якого кольору немає в сусідів
-            if color_lst[i] not in colors: # якщо такого кольору немає, то повертаємо його
-                return color_lst[i]
-        return None
-    color_dict = dict() # словник, де ключ - вершина, а значення - колір
-    for node in graph: # проходимо по всіх вершинах
-        visited_color = [color_dict[elem] for elem in graph[node] if elem in color_dict]
-# перевіряємо, які кольори вже використані
-        color_dict[node] = color(visited_color) # зафарбовуємо вершину
-        if color_dict[node] is None: # якщо не вдалося зафарбувати, то повертаємо None
-            return "Неможливо зафарбувати"
-    return color_dict
+    colors = ['Red', 'Green', 'Blue']
+    independent_array = find_independent_nodes(graph, 4)
+    if len(independent_array) > 3:
+        return 'Неможливо зафарбувати'
+    colored_graph = {}
+    for i, nodes in enumerate(independent_array):
+        for node in nodes:
+            colored_graph[node] = colors[i]
+    visualise(graph, colored_graph)
+    return colored_graph
 
 
 ####### HELPING FUNCTIONS
@@ -426,14 +409,14 @@ deep != 0 and sorted(lst_of_keys) not in [sorted(i) for i in res]:
                     res_.append(i)
     return res_
 
-def visualise(graph, colors=False):
+def visualise(graph, colors):
     '''Funtion to visualise graphs. If colors is True return graph coloring'''
     for start in list(graph):
         for end in graph[start]:
             if end not in graph:
                 graph[end] = []
     G = nx.DiGraph()
-    for key, value in graph_coloring(graph).items():
+    for key, value in colors.items():
         if colors:
             G.add_node(key, color=value)
         else:
