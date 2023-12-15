@@ -308,7 +308,7 @@ def graph_coloring(graph, vis=False):
         if color_dict[node] is None: # якщо не вдалося зафарбувати, то повертаємо None
             return "Неможливо зафарбувати"
     if vis:
-        visualise(color_dict)
+        visualise(color_dict, True)
     return color_dict
 
 
