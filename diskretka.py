@@ -95,16 +95,6 @@ def eiler(graph:dict) -> list[int]:
             return True
         return False
 
-    def edges(graph):
-        edges = 0
-        if isorient(graph):
-            for apex in graph.keys():
-                edges += degree(graph, apex)[0]
-            return edges
-        for apex in graph.keys():
-            edges += degree(graph, apex)
-        return edges/2
-
     def valid(graph:dict, edge_start, edge_fin, orientation):
         if len(graph[edge_start]) == 1:
             return True
