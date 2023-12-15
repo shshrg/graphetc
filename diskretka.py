@@ -111,8 +111,158 @@ def double2(graph: dict) -> bool:
     cycles_len_is_even = all(not len(cycle)&1 for cycle in all_simple_cycles)
     return cycles_len_is_even
 
+def find_cycle_(graph, degree = False):
+    '''
+    Function, which returns all the cycles from given graph
+    '''
+    def recur_find_cycle(graph, key, lst_of_keys = None, res = None, deep = 0):
+        if lst_of_keys is None:
+            lst_of_keys = [key]
+        if res is None:
+            res = []
+        if key in graph:
+            for i in graph[key]:
+                if i not in lst_of_keys:
+                    lst_of_keys.append(i)
+                    recur_find_cycle(graph,i,lst_of_keys,res,deep+1)
+                    if lst_of_keys[-1] in graph and lst_of_keys[0] in graph[lst_of_keys[-1]] and \
+deep != 0 and sorted(lst_of_keys) not in [sorted(i) for i in res]:
+                        res.append(lst_of_keys.copy())
+                    lst_of_keys.remove(i)
+        return res
+
+    res_ = []
+    for key in graph.keys():
+        output = recur_find_cycle(graph, key)
+        if degree:
+            srt_res = [sorted(i[0]) for i in res_]
+        else:
+            srt_res = [sorted(i) for i in res_]
+        for i in output:
+            if sorted(i) not in srt_res:
+                if degree:
+                    dct_ = {}
+                    for j in sorted(i):
+                        if len(graph[j]) not in dct_:
+                            dct_[len(graph[j])] = 1
+                        else:
+                            dct_[len(graph[j])] += 1
+                    res_.append((i, dct_))
+                else:
+                    res_.append(i)
+    return res_
+
 def isomorph(graph1, graph2):
-    pass
+    '''
+    This function checks if given pair of graphs is isomorphic
+    '''
+    # Checks graphs by amount of vertexes
+    if len(graph1.keys()) != len(graph2.keys()):
+        print('Given graphs have different number of vertexes')
+        return False
+
+    # Checks graphs by amount of edges
+    lst_1 = []
+    for key, values in graph1.items():
+        lst_1.extend(values)
+
+    lst_2 = []
+    for key, values in graph2.items():
+        lst_2.extend(values)
+
+    if len(lst_1) != len(lst_2):
+        print('Given graphs have different amount of edges')
+        return False
+
+    # Checks graphs by degree of vertexes
+    dct_1 = {}
+    for key, values in graph1.items():
+        if len(values) in dct_1:
+            dct_1[len(values)] += 1
+        else:
+            dct_1[len(values)] = 1
+
+    dct_2 = {}
+    for key, values in graph2.items():
+        if len(values) in dct_2:
+            dct_2[len(values)] += 1
+        else:
+            dct_2[len(values)] = 1
+
+    for key, value in dct_1.items():
+        if key not in dct_2:
+            print('Given graphs have different degree of vertex')
+            return False
+        if dct_2[key] != value:
+            print('Given graphs have different degree of vertex')
+            return False
+
+    # Checks graphs by degree of the vertex and degree of its neighbours
+    dct_1 = {}
+    for key, values in graph1.items():
+        res_lst = []
+        for value in values:
+            res_lst.append(len(graph1[value]))
+        tup = tuple(sorted(res_lst))
+        if (len(values), tup) not in dct_1:
+            dct_1[len(values), tup] = 1
+        else:
+            dct_1[len(values), tup] += 1
+
+    dct_2 = {}
+    for key, values in graph2.items():
+        res_lst = []
+        for value in values:
+            res_lst.append(len(graph2[value]))
+        tup = tuple(sorted(res_lst))
+        if (len(values), tup) not in dct_2:
+            dct_2[len(values), tup] = 1
+        else:
+            dct_2[len(values), tup] += 1
+
+    for key,values in dct_1.items():
+        if key not in dct_2:
+            print('Given grapgs have different degrees of vertex and its neighbours')
+            return False
+        if dct_2[key] != values:
+            print('Given grapgs have different degrees of vertex and its neighbours')
+            return False
+
+    # Checks graphs by lengths of their simple cycles
+    res_1 = find_cycle_(graph1, True)
+    res_2 = find_cycle_(graph2, True)
+
+    dct_1_1 = {}
+    for i in res_1:
+        tup = tuple(sorted(list(i[1].items())))
+        # print(f'i: {i}, i[1]_tup: {tuple(i[1].items())}, tupr: {tup}')
+        if (len(i[0]),tup) not in dct_1_1:
+            dct_1_1[(len(i[0]),tup)] = 1
+        else:
+            dct_1_1[(len(i[0]),tup)] += 1
+
+    dct_2_1 = {}
+    for i in res_2:
+        tup = tuple(sorted(list(i[1].items())))
+        # print(f'i: {i}, i[1]_tup: {tuple(i[1].items())}')
+        if (len(i[0]),tup) not in dct_2_1:
+            dct_2_1[(len(i[0]),tup)] = 1
+        else:
+            dct_2_1[(len(i[0]),tup)] += 1
+
+    # print(dct_1_1)
+    # print(dct_2_1)
+
+    for key, value in dct_1_1.items():
+        if key not in dct_2_1:
+            print('Given graphs have different length of simple cycles or different degrees \
+of vertexes in cycles')
+            return False
+        if dct_2_1[key] != value:
+            print('Given graphs have different length of simple cycles or different degrees \
+of vertexes in cycles')
+            return False
+
 
 def graph_coloring(graph):
     """Розфарбовування графа жадібним алгоритмом
