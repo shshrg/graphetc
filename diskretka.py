@@ -1,4 +1,5 @@
 '''Комп'ютерний проєкт'''
+import copy
 import matplotlib.pyplot as plt
 import networkx as nx
 
@@ -8,8 +9,6 @@ def visualise(graph, colors=False):
         for end in graph[start]:
             if end not in graph:
                 graph[end] = []
-    print(f'graph: {graph}')
-    print(graph_coloring(graph))
     G = nx.DiGraph()
     for key, value in graph_coloring(graph).items():
         if colors:
@@ -46,14 +45,14 @@ def read_graph(file):
 
 ####### HELPING FUNCTIONS
 def loop_search(graph:dict):
-        for src, dst in graph.items():
-            loop = 0
-            for item in dst:
-                if src == item:
-                    loop = item
-            if loop:
-                dst = dst.remove(loop)
-        return graph
+    for src, dst in graph.items():
+        loop = 0
+        for item in dst:
+            if src == item:
+                loop = item
+        if loop:
+            dst = dst.remove(loop)
+    return graph
 
 def isorient(graph:dict):
     for apex, neighs in graph.items():
@@ -125,9 +124,6 @@ def hamilton(graph:dict):
     return path
 
 def eiler(graph:dict) -> list[int]:
-    
-
-    
     def iseuler(graph:dict):
         if connected(graph):
             if isorient(graph):
