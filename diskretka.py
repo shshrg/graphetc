@@ -43,65 +43,6 @@ def read_graph(file):
         res[x] = sorted(l)
     return res
 
-####### HELPING FUNCTIONS
-def loop_search(graph:dict):
-    for src, dst in graph.items():
-        loop = 0
-        for item in dst:
-            if src == item:
-                loop = item
-        if loop:
-            dst = dst.remove(loop)
-    return graph
-
-def isorient(graph:dict):
-    for apex, neighs in graph.items():
-        for point in neighs:
-            if point in graph.keys():
-                if apex not in graph[point]:
-                    return True
-    return False
-
-def connected(graph:dict):
-    for apex_src in graph.keys():
-        for apex_dst in graph.keys():
-            if apex_src != apex_dst:
-                n = find_path(graph, apex_src, apex_dst, [])
-                m = find_path(graph, apex_dst, apex_src, [])
-                if not n and not m:
-                    return False
-    return True
-
-def degree(graph:dict, apex):
-    if isorient(graph):
-        degree_out = len(graph[apex])
-        degree_in = 0
-        for point in graph.keys():
-            if apex in graph[point]:
-                degree_in +=1
-        return (degree_in, degree_out)
-    return len(graph[apex])
-
-def find_path(graph:dict, src, dst, res:list):
-    res.append(src)
-    if src in graph.keys():
-        if dst in graph[src]:
-            return True
-        for apex in graph[src]:
-            if apex not in res:
-                if find_path(graph, apex, dst, res):
-                    return True
-    return False
-
-def strong_c(graph:dict):
-    for apex_src in graph.keys():
-        for apex_dst in graph.keys():
-            n = find_path(graph, apex_src, apex_dst, [])
-            if not n:
-                return n
-    return True
-########
-
 def hamilton(graph:dict):
     path = []
     start = list(graph.keys())[0]
@@ -186,46 +127,6 @@ def eiler(graph:dict) -> list[int]:
         return vertex_list
     return False
 
-def find_cycle_(graph, degree_ = False):
-    '''
-    Function, which returns all the cycles from given graph
-    '''
-    def recur_find_cycle(graph, key, lst_of_keys = None, res = None, deep = 0):
-        if lst_of_keys is None:
-            lst_of_keys = [key]
-        if res is None:
-            res = []
-        if key in graph:
-            for i in graph[key]:
-                if i not in lst_of_keys:
-                    lst_of_keys.append(i)
-                    recur_find_cycle(graph,i,lst_of_keys,res,deep+1)
-                    if lst_of_keys[-1] in graph and lst_of_keys[0] in graph[lst_of_keys[-1]] and \
-deep != 0 and sorted(lst_of_keys) not in [sorted(i) for i in res]:
-                        res.append(lst_of_keys.copy())
-                    lst_of_keys.remove(i)
-        return res
-
-    res_ = []
-    for key in graph.keys():
-        output = recur_find_cycle(graph, key)
-        if degree_:
-            srt_res = [sorted(i[0]) for i in res_]
-        else:
-            srt_res = [sorted(i) for i in res_]
-        for i in output:
-            if sorted(i) not in srt_res:
-                if degree_:
-                    dct_ = {}
-                    for j in sorted(i):
-                        if len(graph[j]) not in dct_:
-                            dct_[len(graph[j])] = 1
-                        else:
-                            dct_[len(graph[j])] += 1
-                    res_.append((i, dct_))
-                else:
-                    res_.append(i)
-    return res_
 
 def double(graph: dict) -> bool:
     '''
@@ -425,3 +326,100 @@ def graph_coloring(graph):
         if color_dict[node] is None: # якщо не вдалося зафарбувати, то повертаємо None
             return "Неможливо зафарбувати"
     return color_dict
+####### HELPING FUNCTIONS
+def loop_search(graph:dict):
+    for src, dst in graph.items():
+        loop = 0
+        for item in dst:
+            if src == item:
+                loop = item
+        if loop:
+            dst = dst.remove(loop)
+    return graph
+
+def isorient(graph:dict):
+    for apex, neighs in graph.items():
+        for point in neighs:
+            if point in graph.keys():
+                if apex not in graph[point]:
+                    return True
+    return False
+
+def connected(graph:dict):
+    for apex_src in graph.keys():
+        for apex_dst in graph.keys():
+            if apex_src != apex_dst:
+                n = find_path(graph, apex_src, apex_dst, [])
+                m = find_path(graph, apex_dst, apex_src, [])
+                if not n and not m:
+                    return False
+    return True
+
+def degree(graph:dict, apex):
+    if isorient(graph):
+        degree_out = len(graph[apex])
+        degree_in = 0
+        for point in graph.keys():
+            if apex in graph[point]:
+                degree_in +=1
+        return (degree_in, degree_out)
+    return len(graph[apex])
+
+def find_path(graph:dict, src, dst, res:list):
+    res.append(src)
+    if src in graph.keys():
+        if dst in graph[src]:
+            return True
+        for apex in graph[src]:
+            if apex not in res:
+                if find_path(graph, apex, dst, res):
+                    return True
+    return False
+
+def strong_c(graph:dict):
+    for apex_src in graph.keys():
+        for apex_dst in graph.keys():
+            n = find_path(graph, apex_src, apex_dst, [])
+            if not n:
+                return n
+    return True
+def find_cycle_(graph, degree_ = False):
+    '''
+    Function, which returns all the cycles from given graph
+    '''
+    def recur_find_cycle(graph, key, lst_of_keys = None, res = None, deep = 0):
+        if lst_of_keys is None:
+            lst_of_keys = [key]
+        if res is None:
+            res = []
+        if key in graph:
+            for i in graph[key]:
+                if i not in lst_of_keys:
+                    lst_of_keys.append(i)
+                    recur_find_cycle(graph,i,lst_of_keys,res,deep+1)
+                    if lst_of_keys[-1] in graph and lst_of_keys[0] in graph[lst_of_keys[-1]] and \
+deep != 0 and sorted(lst_of_keys) not in [sorted(i) for i in res]:
+                        res.append(lst_of_keys.copy())
+                    lst_of_keys.remove(i)
+        return res
+
+    res_ = []
+    for key in graph.keys():
+        output = recur_find_cycle(graph, key)
+        if degree_:
+            srt_res = [sorted(i[0]) for i in res_]
+        else:
+            srt_res = [sorted(i) for i in res_]
+        for i in output:
+            if sorted(i) not in srt_res:
+                if degree_:
+                    dct_ = {}
+                    for j in sorted(i):
+                        if len(graph[j]) not in dct_:
+                            dct_[len(graph[j])] = 1
+                        else:
+                            dct_[len(graph[j])] += 1
+                    res_.append((i, dct_))
+                else:
+                    res_.append(i)
+    return res_
