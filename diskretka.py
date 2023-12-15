@@ -165,8 +165,6 @@ def eiler(graph:dict) -> list[int]:
         return vertex_list
     return 'No Euler cycle'
 
-print(eiler(read_graph('test.csv')))
-
 def find_cycle_(graph, degree = False):
     '''
     Function, which returns all the cycles from given graph
