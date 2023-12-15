@@ -433,5 +433,3 @@ def visualise(graph, colors = None):
         nx.draw(G, with_labels=True, font_color='white')
 
     plt.show()
-
-visualise(read_graph('test.csv'))
