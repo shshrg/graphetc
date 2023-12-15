@@ -25,7 +25,7 @@ def hamilton(graph):
 def eiler(graph):
     pass
 
-def find_cycle_(graph):
+def find_cycle_(graph, degree = False):
     '''
     Function, which returns all the cycles from given graph
     '''
@@ -48,10 +48,22 @@ deep != 0 and sorted(lst_of_keys) not in [sorted(i) for i in res]:
     res_ = []
     for key in graph.keys():
         output = recur_find_cycle(graph, key)
-        srt_res = [sorted(i) for i in res_]
+        if degree:
+            srt_res = [sorted(i[0]) for i in res_]
+        else:
+            srt_res = [sorted(i) for i in res_]
         for i in output:
             if sorted(i) not in srt_res:
-                res_.append(i)
+                if degree:
+                    dct_ = {}
+                    for j in sorted(i):
+                        if len(graph[j]) not in dct_:
+                            dct_[len(graph[j])] = 1
+                        else:
+                            dct_[len(graph[j])] += 1
+                    res_.append((i, dct_))
+                else:
+                    res_.append(i)
     return res_
 
 def double(graph: dict) -> bool:
@@ -111,46 +123,6 @@ def double2(graph: dict) -> bool:
     cycles_len_is_even = all(not len(cycle)&1 for cycle in all_simple_cycles)
     return cycles_len_is_even
 
-def find_cycle_(graph, degree = False):
-    '''
-    Function, which returns all the cycles from given graph
-    '''
-    def recur_find_cycle(graph, key, lst_of_keys = None, res = None, deep = 0):
-        if lst_of_keys is None:
-            lst_of_keys = [key]
-        if res is None:
-            res = []
-        if key in graph:
-            for i in graph[key]:
-                if i not in lst_of_keys:
-                    lst_of_keys.append(i)
-                    recur_find_cycle(graph,i,lst_of_keys,res,deep+1)
-                    if lst_of_keys[-1] in graph and lst_of_keys[0] in graph[lst_of_keys[-1]] and \
-deep != 0 and sorted(lst_of_keys) not in [sorted(i) for i in res]:
-                        res.append(lst_of_keys.copy())
-                    lst_of_keys.remove(i)
-        return res
-
-    res_ = []
-    for key in graph.keys():
-        output = recur_find_cycle(graph, key)
-        if degree:
-            srt_res = [sorted(i[0]) for i in res_]
-        else:
-            srt_res = [sorted(i) for i in res_]
-        for i in output:
-            if sorted(i) not in srt_res:
-                if degree:
-                    dct_ = {}
-                    for j in sorted(i):
-                        if len(graph[j]) not in dct_:
-                            dct_[len(graph[j])] = 1
-                        else:
-                            dct_[len(graph[j])] += 1
-                    res_.append((i, dct_))
-                else:
-                    res_.append(i)
-    return res_
 
 def isomorph(graph1, graph2):
     '''
