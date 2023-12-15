@@ -409,17 +409,21 @@ deep != 0 and sorted(lst_of_keys) not in [sorted(i) for i in res]:
                     res_.append(i)
     return res_
 
-def visualise(graph, colors):
+def visualise(graph, colors = None):
     '''Funtion to visualise graphs. If colors is True return graph coloring'''
     for start in list(graph):
         for end in graph[start]:
             if end not in graph:
                 graph[end] = []
-    G = nx.DiGraph()
-    for key, value in colors.items():
-        if colors:
+    if isorient(graph):
+        G = nx.DiGraph()
+    else:
+        G = nx.Graph()
+    if colors:
+        for key, value in colors.items():
             G.add_node(key, color=value)
-        else:
+    else:
+        for key, value in graph.items():
             G.add_node(key)
     G.add_edges_from([(key, value) for key, values in graph.items() for value in values])
     if colors:
@@ -429,3 +433,5 @@ def visualise(graph, colors):
         nx.draw(G, with_labels=True, font_color='white')
 
     plt.show()
+
+visualise(read_graph('test.csv'))
