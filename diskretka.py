@@ -280,7 +280,7 @@ of vertexes in cycles')
             return False
 
 
-def graph_coloring(graph):
+def graph_coloring(graph, vis=False):
     """Розфарбовування графа жадібним алгоритмом
     >>> graph_coloring({'A': ['B', 'C'], 'B': ['A', 'C'], 'C': ['B', 'A']})
     {'A': 'Red', 'B': 'Green', 'C': 'Blue'}
@@ -303,10 +303,12 @@ def graph_coloring(graph):
     color_dict = dict() # словник, де ключ - вершина, а значення - колір
     for node in graph: # проходимо по всіх вершинах
         visited_color = [color_dict[elem] for elem in graph[node] if elem in color_dict]
-# перевіряємо, які кольори вже використані
+    # перевіряємо, які кольори вже використані
         color_dict[node] = color(visited_color) # зафарбовуємо вершину
         if color_dict[node] is None: # якщо не вдалося зафарбувати, то повертаємо None
             return "Неможливо зафарбувати"
+    if vis:
+        visualise(color_dict)
     return color_dict
 
 
