@@ -19,8 +19,26 @@ def read_graph(file):
         res[x] = sorted(l)
     return res
 
-def hamilton(graph):
-    pass
+def hamilton(graph:dict):
+    path = []
+    start = list(graph.keys())[0]
+    size = len(list(graph.keys()))
+    path.append(start)
+
+    def ishamilton(graph, apex, path:list):
+        if len(path) == size and start in graph[apex]:
+            return (True, path)
+        for neigh in graph[apex]:
+            if neigh not in path:
+                path.append(neigh)
+                if ishamilton(graph, neigh, path)[0]:
+                    return (True, path)
+                path.remove(neigh)
+        return (False, path)
+    path = ishamilton(graph, start, path)[1]
+    if len(path) == 1:
+        return False
+    return path
 
 def eiler(graph):
     pass
