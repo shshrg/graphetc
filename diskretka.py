@@ -326,8 +326,13 @@ def graph_coloring(graph):
         if color_dict[node] is None: # якщо не вдалося зафарбувати, то повертаємо None
             return "Неможливо зафарбувати"
     return color_dict
+
+
 ####### HELPING FUNCTIONS
 def loop_search(graph:dict):
+    '''
+    Removes all loops from graph.
+    '''
     for src, dst in graph.items():
         loop = 0
         for item in dst:
@@ -338,6 +343,9 @@ def loop_search(graph:dict):
     return graph
 
 def isorient(graph:dict):
+    '''
+    Checks if the graph is oriented or not.
+    '''
     for apex, neighs in graph.items():
         for point in neighs:
             if point in graph.keys():
@@ -346,6 +354,9 @@ def isorient(graph:dict):
     return False
 
 def connected(graph:dict):
+    '''
+    Checks if the graph is connected
+    '''
     for apex_src in graph.keys():
         for apex_dst in graph.keys():
             if apex_src != apex_dst:
@@ -356,6 +367,9 @@ def connected(graph:dict):
     return True
 
 def degree(graph:dict, apex):
+    '''
+    Finds the degree of each point.
+    '''
     if isorient(graph):
         degree_out = len(graph[apex])
         degree_in = 0
@@ -366,6 +380,9 @@ def degree(graph:dict, apex):
     return len(graph[apex])
 
 def find_path(graph:dict, src, dst, res:list):
+    '''
+    Finds the path from one point to another.
+    '''
     res.append(src)
     if src in graph.keys():
         if dst in graph[src]:
@@ -377,6 +394,9 @@ def find_path(graph:dict, src, dst, res:list):
     return False
 
 def strong_c(graph:dict):
+    '''
+    Checks if the oriented graph is stronlgy connected.
+    '''
     for apex_src in graph.keys():
         for apex_dst in graph.keys():
             n = find_path(graph, apex_src, apex_dst, [])
