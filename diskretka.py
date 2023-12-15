@@ -1,5 +1,4 @@
 '''Комп'ютерний проєкт'''
-from itertools import permutations
 
 def read_graph(file):
     '''
@@ -29,7 +28,7 @@ def eiler(graph):
 def double(graph):
     pass
 
-def find_cycle_(graph):
+def find_cycle_(graph, degree = False):
     '''
     Function, which returns all the cycles from given graph
     '''
@@ -52,10 +51,22 @@ deep != 0 and sorted(lst_of_keys) not in [sorted(i) for i in res]:
     res_ = []
     for key in graph.keys():
         output = recur_find_cycle(graph, key)
-        srt_res = [sorted(i) for i in res_]
+        if degree:
+            srt_res = [sorted(i[0]) for i in res_]
+        else:
+            srt_res = [sorted(i) for i in res_]
         for i in output:
             if sorted(i) not in srt_res:
-                res_.append(i)
+                if degree:
+                    dct_ = {}
+                    for j in sorted(i):
+                        if len(graph[j]) not in dct_:
+                            dct_[len(graph[j])] = 1
+                        else:
+                            dct_[len(graph[j])] += 1
+                    res_.append((i, dct_))
+                else:
+                    res_.append(i)
     return res_
 
 def isomorph(graph1, graph2):
@@ -97,8 +108,10 @@ def isomorph(graph1, graph2):
 
     for key, value in dct_1.items():
         if key not in dct_2:
+            print('Given graphs have different degree of vertex')
             return False
         if dct_2[key] != value:
+            print('Given graphs have different degree of vertex')
             return False
 
     # Checks graphs by degree of the vertex and degree of its neighbours
@@ -126,82 +139,47 @@ def isomorph(graph1, graph2):
 
     for key,values in dct_1.items():
         if key not in dct_2:
+            print('Given grapgs have different degrees of vertex and its neighbours')
             return False
         if dct_2[key] != values:
+            print('Given grapgs have different degrees of vertex and its neighbours')
             return False
 
     # Checks graphs by lengths of their simple cycles
-    def recursive_find_cycle(graph, key, lst_of_keys = None, res = None, deep = 0):
-        if lst_of_keys is None:
-            lst_of_keys = [key]
-        if res is None:
-            res = []
-        for i in graph[key]:
-            if i not in lst_of_keys:
-                lst_of_keys.append(i)
-                recursive_find_cycle(graph,i,lst_of_keys,res,deep+1)
-                if lst_of_keys[0] in graph[lst_of_keys[-1]] and deep != 0:
-                    res.append(lst_of_keys.copy())
-                lst_of_keys.remove(i)
-        return res
+    res_1 = find_cycle_(graph1, True)
+    res_2 = find_cycle_(graph2, True)
 
-    dct_1 = {}
-    for i in find_cycle_(graph1):
-        if len(i) not in dct_1:
-            dct_1[len(i)] = 1
+    dct_1_1 = {}
+    for i in res_1:
+        tup = tuple(sorted(list(i[1].items())))
+        # print(f'i: {i}, i[1]_tup: {tuple(i[1].items())}, tupr: {tup}')
+        if (len(i[0]),tup) not in dct_1_1:
+            dct_1_1[(len(i[0]),tup)] = 1
         else:
-            dct_1[len(i)] += 1
+            dct_1_1[(len(i[0]),tup)] += 1
 
-    dct_2 = {}
-    for i in find_cycle_(graph2):
-        if len(i) not in dct_2:
-            dct_2[len(i)] = 1
+    dct_2_1 = {}
+    for i in res_2:
+        tup = tuple(sorted(list(i[1].items())))
+        # print(f'i: {i}, i[1]_tup: {tuple(i[1].items())}')
+        if (len(i[0]),tup) not in dct_2_1:
+            dct_2_1[(len(i[0]),tup)] = 1
         else:
-            dct_2[len(i)] += 1
+            dct_2_1[(len(i[0]),tup)] += 1
 
-    for key, value in dct_1.items():
-        if key not in dct_2:
+    # print(dct_1_1)
+    # print(dct_2_1)
+
+    for key, value in dct_1_1.items():
+        if key not in dct_2_1:
+            print('Given graphs have different length of simple cycles or different degrees \
+of vertexes in cycles')
             return False
-        if dct_2[key] != value:
+        if dct_2_1[key] != value:
+            print('Given graphs have different length of simple cycles or different degrees \
+of vertexes in cycles')
             return False
 
-
-    graph1_ = []
-    for key,values in graph1.items():
-        graph1_.append((key, sorted(values)))
-    graph1_ = dict(graph1_)
-
-    graph2_ = []
-    for key,values in graph2.items():
-        graph2_.append((key, sorted(values)))
-    graph2_ = dict(graph2_)
-
-    mat_1 = []
-    for val in graph1_.values():
-        lst_app = []
-        for ind_x in graph1_:
-            if ind_x not in val:
-                lst_app.append(0)
-            else:
-                lst_app.append(1)
-        mat_1.append(lst_app)
-
-    mat_2 = []
-    for val in graph1_.values():
-        lst_app = []
-        for ind_x in graph1_:
-            if ind_x not in val:
-                lst_app.append(0)
-            else:
-                lst_app.append(1)
-        mat_2.append(lst_app)
-
-    if mat_1 == mat_2:
-        return True
-
-    for i in list(permutations(mat_1, len(graph1_.keys()))):
-        if i == mat_2:
-            return True
 
 def graph_coloring(graph):
     """Розфарбовування графа жадібним алгоритмом
