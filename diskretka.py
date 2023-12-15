@@ -280,7 +280,7 @@ def find_independent_nodes(graph: dict, stop: int) -> list[list]:
                 break
     return independent_array
 
-def graph_coloring(graph):
+def graph_coloring(graph, vis = False):
     colors = ['Red', 'Green', 'Blue']
     independent_array = find_independent_nodes(graph, 4)
     if len(independent_array) > 3:
