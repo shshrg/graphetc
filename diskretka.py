@@ -3,30 +3,10 @@ import copy
 import matplotlib.pyplot as plt
 import networkx as nx
 
-def visualise(graph, colors=False):
-    '''Funtion to visualise graphs. If colors is True return graph coloring'''
-    for start in list(graph):
-        for end in graph[start]:
-            if end not in graph:
-                graph[end] = []
-    G = nx.DiGraph()
-    for key, value in graph_coloring(graph).items():
-        if colors:
-            G.add_node(key, color=value)
-        else:
-            G.add_node(key)
-    G.add_edges_from([(key, value) for key, values in graph.items() for value in values])
-    if colors:
-        colors = [node[1]['color'] for node in G.nodes(data=True)]
-        nx.draw(G, node_color=colors, with_labels=True, font_color='white')
-    else:
-        nx.draw(G, with_labels=True, font_color='white')
-
-    plt.show()
-
-def read_graph(file):
+def read_graph(file, vis=False):
     '''
     Reads a csv and returns a graph in the form of a list or dictionary.
+    If vis == True, visualises the graph.
     '''
     with open(file, mode='r', encoding='utf-8') as f:
         lines = f.readlines()
@@ -41,6 +21,8 @@ def read_graph(file):
             if y[0] == x:
                 l.append(y[1])
         res[x] = sorted(l)
+    if vis:
+        visualise(res)
     return res
 
 def hamilton(graph:dict):
@@ -443,3 +425,24 @@ deep != 0 and sorted(lst_of_keys) not in [sorted(i) for i in res]:
                 else:
                     res_.append(i)
     return res_
+
+def visualise(graph, colors=False):
+    '''Funtion to visualise graphs. If colors is True return graph coloring'''
+    for start in list(graph):
+        for end in graph[start]:
+            if end not in graph:
+                graph[end] = []
+    G = nx.DiGraph()
+    for key, value in graph_coloring(graph).items():
+        if colors:
+            G.add_node(key, color=value)
+        else:
+            G.add_node(key)
+    G.add_edges_from([(key, value) for key, values in graph.items() for value in values])
+    if colors:
+        colors = [node[1]['color'] for node in G.nodes(data=True)]
+        nx.draw(G, node_color=colors, with_labels=True, font_color='white')
+    else:
+        nx.draw(G, with_labels=True, font_color='white')
+
+    plt.show()
