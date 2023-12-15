@@ -73,26 +73,23 @@ def double(graph: dict) -> bool:
                 empty_nodes += [end]
     for empty_node in empty_nodes:
         graph[empty_node] = []
-    independent_array = []
-    for start in graph:
-        if not independent_array:
-            independent_array += [[start]]
-        else:
-            for j, independent_nodes in enumerate(independent_array):
-                if start not in independent_nodes:
-                    for node in independent_nodes:
-                        if node in graph[start] or start in graph[node]:
-                            is_last_node = j == len(independent_array) - 1
-                            if is_last_node:
-                                independent_array += [[start]]
-                                if len(independent_array) > 2:
-                                    return False
-                            break
-                    else:
-                        independent_nodes += [start]
-                        break
-                else:
+    graph_keys = list(graph)
+    independent_array = [[graph_keys[0]]]
+    for start in graph_keys[1:]:
+        for j, independent_nodes in enumerate(independent_array):
+            for node in independent_nodes:
+                if node in graph[start] or start in graph[node]:
+                    is_last_node = j == len(independent_array) - 1
+                    if is_last_node:
+                        if len(independent_array) == 2:
+                            return False
+                        independent_array += [[start]]
                     break
+            else:
+                independent_nodes += [start]
+                break
+        else:
+            break
     return True
 
 def double2(graph: dict) -> bool:
